@@ -1,7 +1,7 @@
 // =============================================================================
 // v0.0.1 2022_0220_0749 by Ben Jaffe
 // The following JS allows you to put an emoji before any page with a given prefix,
-// suffix, or substring match.
+// suffix, exact match, or substring match.
 // You can define as many customizations as you want.
 //   title (optional): makes the generated css prettier, but you won't see it anyway
 //   value (required): the value it matches against

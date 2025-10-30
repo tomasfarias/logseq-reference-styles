@@ -5,6 +5,7 @@ import {v4 as uuid} from 'uuid';
 import {makeSelectorCSS} from './makeSelectorCSS';
 
 export enum AttributeSelector {
+    Exact = "",
     Prefix = "^",
     Suffix = "$",
     Substring = "*",
@@ -137,6 +138,7 @@ const App = () => {
                       })
                     }
                 >
+                  <option value={AttributeSelector.Exact}>Exact</option>
                   <option value={AttributeSelector.Prefix}>Prefix</option>
                   <option value={AttributeSelector.Suffix}>Suffix</option>
                   <option value={AttributeSelector.Substring}>Substring</option>
