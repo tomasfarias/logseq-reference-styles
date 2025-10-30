@@ -2,10 +2,17 @@ import '@logseq/libs';
 import React, {useState} from 'react';
 import './App.css';
 import {v4 as uuid} from 'uuid';
-import {makePrefixCSS} from './makePrefixCSS';
+import {makeSelectorCSS} from './makeSelectorCSS';
+
+export enum AttributeSelector {
+    Prefix = "^",
+    Suffix = "$",
+    Substring = "*",
+};
 
 export type BlockStyle = {
-  prefix: string;
+  value: string;
+  selector: AttributeSelector;
   character?: string;
   color?: string;
 };
@@ -14,7 +21,7 @@ export type BlockStyles = {[key: string]: BlockStyle};
 
 const makeCSS = (customizations: BlockStyles) => {
   return Object.entries(customizations)
-    .map((customization) => makePrefixCSS(...customization))
+    .map((customization) => makeSelectorCSS(...customization))
     .join('\n\n');
 };
 
@@ -39,7 +46,7 @@ const App = () => {
     const id = uuid();
     setBlockStyles({
       ...blockStyles,
-      [id]: {prefix: 'Party: ', character: '🎉'},
+      [id]: {value: 'Party: ', selector: AttributeSelector.Prefix, character: '🎉'},
     });
   };
 
@@ -80,25 +87,39 @@ const App = () => {
         {Object.entries<BlockStyle>({
           ...blockStyles,
         }).map(([name, blockStyle]) => {
-          const {prefix, character, color} = blockStyle;
+          const {value, selector, character, color} = blockStyle;
           return (
-            <div className="block-ref-style-wrapper">
+              <div key={name} className="block-ref-style-wrapper">
               <div className="block-ref-style">
                 <input
                   type="text"
                   className="block-ref-input fix"
-                  value={prefix}
+                  value={value}
                   onChange={(e) =>
                     handleChange(name, {
                       ...blockStyle,
-                      prefix: e.target.value,
+                      value: e.target.value,
                     })
                   }
                 />
+                <select
+                  className="block-ref-input selector"
+                  value={selector}
+                    onChange={(e) =>
+                      handleChange(name, {
+                        ...blockStyle,
+                        selector: e.target.value as AttributeSelector
+                      })
+                    }
+                >
+                  <option value={AttributeSelector.Prefix}>Prefix</option>
+                  <option value={AttributeSelector.Suffix}>Suffix</option>
+                  <option value={AttributeSelector.Substring}>Substring</option>
+                </select>
                 <input
                   type="text"
                   className="block-ref-input char"
-                  value={character}
+                  value={character || ''}
                   onChange={(e) =>
                     handleChange(name, {
                       ...blockStyle,
@@ -109,7 +130,7 @@ const App = () => {
                 <input
                   type="color"
                   className="block-ref-input color"
-                  value={color}
+                  value={color || '#000000'}
                   onChange={(e) =>
                     handleChange(name, {...blockStyle, color: e.target.value})
                   }

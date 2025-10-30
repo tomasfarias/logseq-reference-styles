@@ -41,6 +41,9 @@
 .color {
   width: 10em;
 }
+.selector {
+  width: 7em;
+}
 .btn-add {
   margin-top: 4px;
 }

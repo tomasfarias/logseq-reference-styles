@@ -1,11 +1,12 @@
 import '@logseq/libs';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App, {BlockStyles} from './App';
+import App, {BlockStyles, AttributeSelector} from './App';
 
 const initialBlockStyles = {
   seedlings: {
-    prefix: 'S: ',
+    value: 'S: ',
+    selector: AttributeSelector.Prefix,
     character: '🌱',
     color: '#4f9d03',
   },
