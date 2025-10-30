@@ -26,9 +26,34 @@ const makeCSS = (customizations: BlockStyles) => {
 };
 
 const App = () => {
-  const [blockStyles, setBlockStylesInStateOnly] = useState<BlockStyles>(
-    JSON.parse(logseq.settings.blockStyles) as BlockStyles,
-  );
+  const [blockStyles, setBlockStylesInStateOnly] = useState<BlockStyles>(() => {
+    const rawStyles = JSON.parse(logseq.settings.blockStyles) as any;
+    const styles: BlockStyles = {};
+    let needsMigration = false;
+
+    for (const [key, style] of Object.entries(rawStyles)) {
+      // Old settings only allowed using 'prefix' selector.
+      // Update them to the new format if required.
+      if ('prefix' in style) {
+        styles[key] = {
+          value: style.prefix,
+          selector: AttributeSelector.Prefix,
+          character: style.character,
+          color: style.color,
+        } as BlockStyle;
+
+        needsMigration = true;
+      } else {
+        styles[key] = style as BlockStyle;
+      }
+    }
+
+    if (needsMigration) {
+      logseq.updateSettings({blockStyles: JSON.stringify(styles)});
+    }
+
+    return styles;
+  });
 
   React.useEffect(() => {
     logseq.provideStyle({
